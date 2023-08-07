@@ -4,5 +4,15 @@ This project is a chess engine written in C that focuses on code simplicity rath
 # Dependencies
 The project requires SDL2 and SDL_image in order to be built.
 
+# Features
+**Start Screen:**
+![image](https://github.com/EduardoSteinmann/simple_engine/blob/main/assets/chess_start_menu.png)
+
+**Alliance Selection:**
+![image](https://github.com/EduardoSteinmann/simple_engine/blob/main/assets/color_selection.png)
+
+**Chess Match:**
+![image](https://github.com/EduardoSteinmann/simple_engine/blob/main/assets/match_gameplay.png)
+
 # Releases
 As of right now, the only release is for windows.
