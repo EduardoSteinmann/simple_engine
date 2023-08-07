@@ -1,0 +1,9 @@
+/x64
+/.vs
+/.vscode
+*.vcxproj
+*.aps
+*.vcxproj.user
+*vcxproj.filters
+*.dll
+/.exe
