@@ -316,7 +316,7 @@ const int display_checkmate_screen(SDL_Renderer* const renderer, const int winne
     return 0;
 }
 
-const int display_stalemate_screen(const SDL_Renderer* const renderer)
+const int display_stalemate_screen(SDL_Renderer* const renderer)
 {
     const char* file_name = "assets/stalemate.png";
 

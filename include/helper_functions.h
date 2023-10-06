@@ -40,20 +40,4 @@ void clone_board(Piece board[ROWS][COLS], Piece dest[ROWS][COLS]);
 
 void set_pawn_as_double_jumped(Piece* const pawn);
 
-void set_pawn_en_passant_right(Piece* const pawn);
-
-void set_pawn_en_passant_left(Piece* const pawn);
-
-const bool can_en_passant_right(Piece* const pawn);
-
-const bool can_en_passant_left(Piece* const pawn);
-
-const bool pawn_can_perform_right_en_passant(const Piece* const pawn);
-
-const bool pawn_can_perform_left_en_passant(const Piece* const pawn);
-
-const bool pawn_can_perform_both_en_passant(const Piece* const pawn);
-
-void unregister_en_passant(Piece board[ROWS][COLS]);
-
 #endif // _HELPERS

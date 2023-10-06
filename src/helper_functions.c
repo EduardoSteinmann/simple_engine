@@ -49,7 +49,7 @@ void init_new_board(Piece board[ROWS][COLS])
 
 	for (int col = 0; col < COLS; col++)
 	{
-		board[BLACK_PAWN_ROW][col] = init_piece(PAWN_THAT_CAN_EN_PASSANT, BLACK, col, BLACK_PAWN_ROW);
+		board[BLACK_PAWN_ROW][col] = init_piece(PAWN, BLACK, col, BLACK_PAWN_ROW);
 	}
 
 	for (int row = 2; row < 6; row++)
@@ -62,7 +62,7 @@ void init_new_board(Piece board[ROWS][COLS])
 
 	for (int col = 0; col < COLS; col++)
 	{
-		board[WHITE_PAWN_ROW][col] = init_piece(PAWN_THAT_CAN_EN_PASSANT, WHITE, col, WHITE_PAWN_ROW);
+		board[WHITE_PAWN_ROW][col] = init_piece(PAWN, WHITE, col, WHITE_PAWN_ROW);
 	}
 
 	board[WHITE_PIECE_ROW][0] = init_piece(ROOK, WHITE, 0, WHITE_PIECE_ROW);
@@ -157,12 +157,7 @@ const bool piece_contains_coord_in_moves(const Piece* const piece, Coord coord)
 
 const int get_piece_value(const Piece* const piece)
 {
-	if (piece->value == PAWN_WITH_DOUBLE_JUMP || piece->value == PAWN_B_EN_PASSANT
-		|| piece->value == PAWN_L_EN_PASSANT || piece->value == PAWN_R_EN_PASSANT
-		|| piece->value == PAWN_THAT_CAN_EN_PASSANT || piece->value == PAWN_THAT_CAN_EN_PASSANT_R
-		|| piece->value == PAWN_THAT_CAN_EN_PASSANT_L || piece->value == PAWN_THAT_CAN_EN_PASSANT_L_BUT_NOT_R 
-		|| piece->value == PAWN_THAT_CAN_EN_PASSANT_R_BUT_NOT_L || piece->value == PAWN_L_EN_PASSANT_BUT_NOT_R
-		|| piece->value == PAWN_R_EN_PASSANT_BUT_NOT_L)
+	if (piece->value == PAWN_WITH_DOUBLE_JUMP)
 	{
 		return PAWN;
 	}
@@ -289,61 +284,4 @@ void clone_board(Piece board[ROWS][COLS], Piece dest[ROWS][COLS])
 void set_pawn_as_double_jumped(Piece* const pawn)
 {
 	pawn->value = PAWN_WITH_DOUBLE_JUMP;
-}
-
-const bool can_en_passant_right(Piece* const pawn)
-{
-	return pawn->value == PAWN_THAT_CAN_EN_PASSANT_R || pawn->value == PAWN_THAT_CAN_EN_PASSANT || pawn->value == PAWN_WITH_DOUBLE_JUMP 
-		|| pawn->value == PAWN_R_EN_PASSANT || pawn->value == PAWN_B_EN_PASSANT || pawn->value == PAWN_THAT_CAN_EN_PASSANT_R_BUT_NOT_L 
-		|| pawn->value == PAWN_R_EN_PASSANT_BUT_NOT_L;
-}
-
-const bool can_en_passant_left(Piece* const pawn)
-{
-	return pawn->value == PAWN_THAT_CAN_EN_PASSANT_L || pawn->value == PAWN_THAT_CAN_EN_PASSANT || pawn->value == PAWN_WITH_DOUBLE_JUMP 
-		|| pawn->value == PAWN_L_EN_PASSANT || pawn->value == PAWN_B_EN_PASSANT || pawn->value == PAWN_THAT_CAN_EN_PASSANT_L_BUT_NOT_R 
-		|| pawn->value == PAWN_L_EN_PASSANT_BUT_NOT_R;
-}
-
-void set_pawn_en_passant_right(Piece* const pawn)
-{
-	if (pawn->value == PAWN_THAT_CAN_EN_PASSANT_R_BUT_NOT_L || pawn->value == PAWN_R_EN_PASSANT_BUT_NOT_L)
-	{
-		pawn->value = PAWN_R_EN_PASSANT_BUT_NOT_L;
-		return;
-	}
-
-	pawn->value = PAWN_R_EN_PASSANT;
-}
-
-void set_pawn_en_passant_left(Piece* const pawn)
-{
-	if (pawn->value == PAWN_R_EN_PASSANT)
-	{
-		pawn->value = PAWN_B_EN_PASSANT;
-		return;
-	}
-
-	if (pawn->value == PAWN_THAT_CAN_EN_PASSANT_L_BUT_NOT_R || pawn->value == PAWN_L_EN_PASSANT_BUT_NOT_R)
-	{
-		pawn->value = PAWN_L_EN_PASSANT_BUT_NOT_R;
-		return;
-	}
-
-	pawn->value = PAWN_L_EN_PASSANT;
-}
-
-const bool pawn_can_perform_right_en_passant(const Piece* const pawn)
-{
-	return pawn->value == PAWN_R_EN_PASSANT || pawn->value == PAWN_R_EN_PASSANT_BUT_NOT_L || pawn->value == PAWN_B_EN_PASSANT;
-}
-
-const bool pawn_can_perform_left_en_passant(const Piece* const pawn)
-{
-	return pawn->value == PAWN_L_EN_PASSANT || pawn->value == PAWN_L_EN_PASSANT_BUT_NOT_R || pawn->value == PAWN_B_EN_PASSANT;
-}
-
-const bool pawn_can_perform_both_en_passant(const Piece* const pawn)
-{
-	return pawn->value == PAWN_B_EN_PASSANT;
 }

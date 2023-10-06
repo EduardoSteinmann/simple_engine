@@ -20,6 +20,6 @@ const int display_promotion_button(SDL_Renderer* const renderer, const int x_coo
 
 const int display_checkmate_screen(SDL_Renderer* const renderer, const int winner);
 
-const int display_stalemate_screen(const SDL_Renderer* const renderer);
+const int display_stalemate_screen(SDL_Renderer* const renderer);
 
 #endif

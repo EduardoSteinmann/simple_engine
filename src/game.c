@@ -179,7 +179,7 @@ const int PVP_mode(Piece board[ROWS][COLS], const SDL_Event* const event, Coord*
 
             const Move move = { clicked_piece->coords, { mouse->x / TILE_SIZE, mouse->y / TILE_SIZE } };
 
-            const int move_code = make_move(board, move, current_player);
+            const int move_code = make_move(board, move, current_player, false);
 
             clicked_piece = NULL;
 
@@ -325,7 +325,7 @@ const int player_move(Piece board[ROWS][COLS], const SDL_Event* const event, Coo
 
             const Move move = { clicked_piece->coords, { mouse->x / TILE_SIZE, mouse->y / TILE_SIZE } };
 
-            const int move_code = make_move(board, move, current_player);
+            const int move_code = make_move(board, move, current_player, false);
 
             clicked_piece = NULL;
 
@@ -337,7 +337,7 @@ const int player_move(Piece board[ROWS][COLS], const SDL_Event* const event, Coo
                 {
                     is_promoting = true;
                     pawn = init_piece(PAWN, current_player, move.final.x, move.final.y);
-                    return AI_MODE;
+                    return PAWN_PROMOTION;
                 }
             }
         }
@@ -395,7 +395,7 @@ const int AI_move(Piece board[ROWS][COLS], SDL_Renderer* const renderer, const i
 
     const Move AI_move = generate_move(board, AI_color, SEARCH_DEPTH);
 
-    const int move_code = make_move(board, AI_move, AI_color);
+    const int move_code = make_move(board, AI_move, AI_color, false);
 
     if (!move_code)
     {
@@ -650,11 +650,11 @@ const int game_loop()
         {
             mode = PVP_mode(board, &event, &mouse, renderer, &turn);
         }
-        else if (mode == AI_MODE)
+        else if (mode == AI_MODE || mode == PAWN_PROMOTION)
         {
             const int player_result = player_move(board, &event, &mouse, renderer, &turn, player_color);
 
-            if (player_result == CHECKMATE || player_result == STALEMATE || player_result == QUIT_MODE || player_result == -1)
+            if (player_result == PAWN_PROMOTION || player_result == CHECKMATE || player_result == STALEMATE || player_result == QUIT_MODE || player_result == -1)
             {
                 mode = player_result;
                 continue;

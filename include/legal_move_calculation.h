@@ -2,7 +2,7 @@
 #define _CALCULATION
 #include "helper_functions.h"
 
-const int make_move(Piece board[ROWS][COLS], Move move, const int current_player);
+const int make_move(Piece board[ROWS][COLS], Move move, const int current_player, const bool is_calculating);
 
 void perform_en_passant_capture_if_that_is_the_move(Piece board[ROWS][COLS], const Move move, const Piece* const pawn);
 

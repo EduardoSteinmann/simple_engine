@@ -64,7 +64,7 @@ const int test_move(Piece board[ROWS][COLS], const Move move)
         board[move.final.y][move.final.x] = init_piece(QUEEN, piece->color, move.final.x, move.final.y);
     }
 
-    remove_en_passant_if_not_done_immediately(board, piece->color);
+    remove_en_passant_if_not_done_immediately(board, get_opposite_color(piece->color));
 
     return move_code;
 }
@@ -107,7 +107,7 @@ const Move generate_move(Piece board[ROWS][COLS], const int color, const int sea
 
                 const int eval = minimax(copy_board, get_opposite_color(color), search_depth - 1, -INFINITY, INFINITY) * color * -1;
 
-                if (eval >= max_eval)
+                if (eval >= max_eval || equal_moves(result, EMPTY_MOVE))
                 {
                     max_eval = eval;
                     result = move;
@@ -132,7 +132,7 @@ const int minimax(Piece board[ROWS][COLS], const int color, const int search_dep
 
     if (!king)
     {
-        return INFINITY * color * -1; //Fail safe: if get_king ever returns null, return the least favorable eval for the caller of minimax
+        return INFINITY * color; //Fail safe: if get_king ever returns null, return the least favorable eval for the caller of minimax
     }
 
     const bool in_check = is_king_in_check(king, board);

@@ -1,6 +1,6 @@
 #include "legal_move_calculation.h"
 
-const int make_move(Piece board[ROWS][COLS], Move move, const int current_player)
+const int make_move(Piece board[ROWS][COLS], Move move, const int current_player, const bool is_calculating)
 {
 	int move_code = 0;
 
@@ -51,7 +51,10 @@ const int make_move(Piece board[ROWS][COLS], Move move, const int current_player
 		move_code = PAWN_PROMOTION;
 	}
 
-	remove_en_passant_if_not_done_immediately(board, current_player);
+	if (!is_calculating)
+	{
+		remove_en_passant_if_not_done_immediately(board, get_opposite_color(current_player));
+	}
 
 	return move_code;
 }
@@ -61,11 +64,11 @@ void perform_en_passant_capture_if_that_is_the_move(Piece board[ROWS][COLS], con
 	const Move left_capture = { pawn->coords, { pawn->coords.x - 1, pawn->coords.y + pawn->color } };
 	const Move right_capture = { pawn->coords, { pawn->coords.x + 1, pawn->coords.y + pawn->color } };
 
-	if (equal_moves(move, right_capture) && pawn_can_perform_right_en_passant(pawn))
+	if (equal_moves(move, right_capture) && pawn_double_jumped(&board[right_capture.initial.y][right_capture.final.x]))
 	{
 		board[right_capture.initial.y][right_capture.final.x] = init_empty();
 	}
-	else if (equal_moves(move, left_capture) && pawn_can_perform_left_en_passant(pawn))
+	else if (equal_moves(move, left_capture) && pawn_double_jumped(&board[left_capture.initial.y][left_capture.final.x]))
 	{
 		board[left_capture.initial.y][left_capture.final.x] = init_empty();
 	}
@@ -209,50 +212,14 @@ void remove_en_passant_if_not_done_immediately(Piece board[ROWS][COLS], const in
 	{
 		for (int col = 0; col < COLS; col++)
 		{
-			if (row == 3 && col == 4)
-			{
-				//printf("At pawn");
-			}
-
-			if (board[row][col].color != color)
-			{
-				continue;
-			}
-
-			if (get_piece_value(&board[row][col]) != PAWN)
+			if (board[row][col].color != color || get_piece_value(&board[row][col]) != PAWN)
 			{
 				continue;
 			}
 
 			Piece* const pawn = &board[row][col];
 
-			const int en_passant_row = pawn->color == WHITE ? 3 : 4;
-
-			if (row != en_passant_row)
-			{
-				continue;
-			}
-
-			if (pawn_can_perform_both_en_passant(pawn))
-			{
-				pawn->value = PAWN;
-			}
-			else if (pawn->value == PAWN_R_EN_PASSANT)
-			{
-				pawn->value = PAWN_THAT_CAN_EN_PASSANT_L_BUT_NOT_R;
-			}
-			else if (pawn->value == PAWN_R_EN_PASSANT_BUT_NOT_L)
-			{
-				pawn->value = PAWN;
-			}
-			else if (pawn->value == PAWN_L_EN_PASSANT)
-			{
-				pawn->value = PAWN_THAT_CAN_EN_PASSANT_R_BUT_NOT_L;
-			}
-			else if (pawn->value == PAWN_L_EN_PASSANT_BUT_NOT_R)
-			{
-				pawn->value = PAWN;
-			}
+			pawn->value = PAWN;
 		}
 	}
 }
@@ -314,7 +281,7 @@ const bool would_put_king_in_check(Piece board[ROWS][COLS], const Move move, con
 	Piece copy_board[ROWS][COLS];
 	clone_board(board, copy_board);
 	
-	if (make_move(copy_board, move, color))
+	if (make_move(copy_board, move, color, true))
 	{
 		in_check = is_king_in_check(get_king(copy_board, color), copy_board);
 	}
@@ -328,7 +295,7 @@ const bool would_remove_check(Piece board[ROWS][COLS], const Move move, const in
 	Piece copy_board[ROWS][COLS];
 	clone_board(board, copy_board);
 
-	if (make_move(copy_board, move, color))
+	if (make_move(copy_board, move, color, true))
 	{
 		in_check = is_king_in_check(get_king(copy_board, color), copy_board);
 	}
@@ -400,16 +367,14 @@ void calculate_pawn_moves(Piece board[ROWS][COLS], Piece* pawn)
 		const Piece* const piece_to_the_left = &board[en_passant_row][pawn->coords.x - 1];
 		const Piece* const piece_to_the_right = &board[en_passant_row][pawn->coords.x + 1];
 
-		if (get_piece_value(piece_to_the_right) == PAWN && piece_to_the_left->color != pawn->color && pawn_double_jumped(piece_to_the_right) && can_en_passant_right(pawn))
+		if (get_piece_value(piece_to_the_right) == PAWN && piece_to_the_left->color != pawn->color && pawn_double_jumped(piece_to_the_right))
 		{
 			pawn->moves.moves[last_move_index++] = (Move){ pawn->coords, right_capture };
-			set_pawn_en_passant_right(pawn);
 		}
 
-		if (get_piece_value(piece_to_the_left) == PAWN && piece_to_the_right->color != pawn->color && pawn_double_jumped(piece_to_the_left) && can_en_passant_left(pawn))
+		if (get_piece_value(piece_to_the_left) == PAWN && piece_to_the_right->color != pawn->color && pawn_double_jumped(piece_to_the_left))
 		{
 			pawn->moves.moves[last_move_index++] = (Move){ pawn->coords, left_capture };
-			set_pawn_en_passant_left(pawn);
 		}
 	}
 	
